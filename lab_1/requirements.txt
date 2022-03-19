@@ -1,0 +1,4 @@
+wolframclient
+wolframwebengine
+python-dotenv
+fastapi[uvicorn]
