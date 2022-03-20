@@ -7,14 +7,92 @@
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script defer src="scripts/input_data.js"></script>
     <link rel="stylesheet" href="styles/inputs.css">
+    <link rel="stylesheet" href="styles/base_styles.css">
+    <link rel="stylesheet" href="styles/layout_stiles.css">
+
 </head>
 <body>
-<input id="P1_data" value=""
-       oninput="correcting_number(event)"
-       onchange="corrected_number(event)">
-<input id="P2_data" value=""
-       oninput="correcting_number(event)"
-       onchange="corrected_number(event)">
-    <p id="main_formula">$$\sum_{i=0}^n i^2 = \frac{(n^2+n)(2n+1)}{6}$$</p>
+
+<h1>Лабораторная работа по вычислительным алгоритмам № 2</h1>
+
+<p id="main_formula">$$\frac{0}{0}$$</p>
+<div class="parent_box">
+
+    <div class="child input_box_parent">
+        <div class="array_box">
+            <h2>Данные для первого (верхнего) многочлена</h2>
+            <div class="input_box">
+                <test>Введите аргументы многочлена</test>
+                <input id="P1_data" value=""
+                       oninput="corrected_a_set_of_numbers(event)"
+                       onchange="corrected_a_set_of_numbers(event)"
+                       placeholder="через запятую, начиная с нулевой степени">
+            </div>
+            <div class="input_box">
+                <test>Введите значение аргумента</test>
+                <input id="P1_arg" value="0"
+                       oninput="correcting_number(event)"
+                       onchange="corrected_number(event)"
+                       placeholder=""/>
+            </div>
+        </div>
+
+        <div class="array_box">
+            <h2>Данные для второго (нижнего) многочлена</h2>
+            <div class="input_box">
+                <test>Введите аргументы многочлена</test>
+                <input id="P2_data" value=""
+                       oninput="corrected_a_set_of_numbers(event)"
+                       onchange="corrected_a_set_of_numbers(event)"
+                       placeholder="через запятую, начиная с нулевой степени">
+            </div>
+            <div class="input_box">
+                <test>Введите значение аргумента</test>
+                <input id="P2_arg" value="0"
+                       oninput="correcting_number(event)"
+                       onchange="corrected_number(event)"
+                       placeholder=""/>
+            </div>
+        </div>
+        <h2>Другие данные</h2>
+        <div class="array_box">
+            <div class="input_box">
+                <test>Значение аргумента синуса</test>
+                <input id="sin_data" value="0"
+                       oninput="correcting_number(event)"
+                       onchange="corrected_number(event)"
+                       placeholder="">
+            </div>
+        </div>
+
+        <div class="array_box">
+            <div class="input_box">
+                <test>Значение аргумента косинуса</test>
+                <input id="cos_data" value="0"
+                       oninput="correcting_number(event)"
+                       onchange="corrected_number(event)"
+                       placeholder="">
+            </div>
+        </div>
+
+        <div class="array_box">
+            <div class="input_box">
+                <test>Значение аргумента экспоненциальной функции</test>
+                <input id="exp_data" value="0"
+                       oninput="correcting_number(event)"
+                       onchange="corrected_number(event)"
+                       placeholder="">
+            </div>
+        </div>
+
+        <div class="array_box">
+            <h2></h2>
+             <button id="send_button">Посчитать</button>
+
+        </div>
+    </div>
+
+</div>
+
 </body>
 </html>
