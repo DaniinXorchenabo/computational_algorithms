@@ -28,6 +28,8 @@ const button_handler = (event) => {
                     console.log(xhr.status + ': ' + xhr.statusText);
                 } else {
                     console.log(xhr.responseText);
+                    draw_formula(null, xhr.responseText);
+
                 }
 
             }
