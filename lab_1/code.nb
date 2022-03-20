@@ -1,0 +1,30 @@
+
+arr1 = {1,2,3};
+x1 = 2;
+arr2 = {1,-2,4};
+x2 = 3;
+pFunc[arr_, x_] := (result = 0;
+                        For[i = 1, Count[arr,_] >= i, i++, result = (result * x) + Part[arr, i]; ]; 
+                        result);
+pFunc[arr1, x1] + pFunc[arr2, x2];
+sinX[oldX_, eps_] := (
+        x = Mod[Abs[oldX], 2 * Pi] * (oldX / Abs[oldX]);
+        x = If[Abs[x] >= Pi, -Mod[Abs[x], Pi], Mod[Abs[x], Pi]] * (oldX / Abs[oldX]);
+        x = If[Abs[x] > Pi / 2, Pi - Abs[x], x]* (oldX / Abs[oldX]);
+        x = x;
+        u = x;
+        result = 0;
+        For[k = 0,
+            (Abs[u] > eps) || (k < 2), 
+            u = -1 * x ^2 * u / (2 * k * (2 * k + 1)),
+            k++;
+            result += u;
+            ];
+        {N[result, 20], N[u, 20], k, N[x, 20]};
+        N[result, 20]
+);
+    
+cosX[oldX_, eps_] := (sinX[oldX + Pi/2, eps]);
+    
+{cosX[9, 10^-8], sinX[9, 10^-8], sinArg, cosArg, cosX[sinArg, 10^-8], sinX[cosArg, 10^-8]}
+
