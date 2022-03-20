@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from wolframclient.evaluation import WolframCloudAsyncSession, SecuredAuthenticationKey
 from fastapi import FastAPI
 from wolframclient.serializers import export
-from fastapi import FastAPI, Path
+from fastapi import FastAPI, Path, Query
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -51,12 +51,13 @@ async def create_connection_with_wolfram():
 
 
 @app.get('/calculate')
-async def test(p1: list[Decimal] = None, p2: list[Decimal] = None,
+async def test(p1: list[float] = Query([0]), p2: list[float] = Query([0]),
                p1_x: Decimal = 0, p2_x: Decimal = 0,
                sin_arg: Decimal = 0, cos_arg: Decimal = 0, exp_arg: Decimal = 1,
                eps='10^-8'):
-    p1: list[int] = [0] if p1 is None else p1
-    p2: list[int] = [0] if p2 is None else p2
+    print(p1, p2)
+    p1: list[int | Decimal] = [0] if p1 is None else p1
+    p2: list[int | Decimal] = [0] if p2 is None else p2
     global wolfram_code
     with open('code.nb', 'r', encoding='utf-8') as f:
         wolfram_code = f.read()
@@ -68,9 +69,12 @@ async def test(p1: list[Decimal] = None, p2: list[Decimal] = None,
              f"arr2 = {'{'} {', '.join(map(str, p2))} {'}'};" \
              f"x2 = {p2_x};" \
              f"eps = {eps};" + '\n'
-
+    print(params)
     data = session.evaluate(params + wolfram_code)
-    return await data
+    print(data)
+    awaited_data = await data
+    print(awaited_data)
+    return awaited_data
 
 
 app.mount("/public", StaticFiles(directory=join(split(__file__)[0], 'public')), name="static")
