@@ -21,6 +21,19 @@ sinX[oldX_, eps_] := (
 );
     
 cosX[oldX_, eps_] := (sinX[oldX + Pi/2, eps]);
-    
-{pFunc[arr1, x1], pFunc[arr2, x2], sinX[cosArg, eps], cosX[sinArg, eps]}
+
+expX[x_, eps_] := (
+    result = 0;
+    u=1;
+    For[k = 0,
+        (Abs[u] > eps),
+        u = x * u / k,
+        k++;
+        result += u;
+    ];
+    N[result, 20]
+);
+
+{pFunc[arr1, x1], pFunc[arr2, x2], sinX[cosArg, eps], cosX[sinArg, eps], expX[expArg, eps]};
+N[pFunc[arr1, x1] / pFunc[arr2, x2] * sinX[cosArg, eps] + cosX[sinArg, eps] / expArg * expX[expArg, eps], 20]
 

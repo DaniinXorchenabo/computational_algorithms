@@ -58,9 +58,11 @@ async def test():
     t = 5
     sin_arg = 1
     cos_arg = 1
-    eps = 10**-8
+    eps = '10^-8'
+    exp_arg = 1
     params = f"sinArg = {sin_arg};" \
              f"cosArg = {cos_arg};" \
+             f"expArg = {exp_arg};" \
              f"arr1 = {'{'} {', '.join(map(str, P1))} {'}'};" \
              f"x1 = {P1_x};" \
              f"arr2 = {'{'} {', '.join(map(str, P2))} {'}'};" \
@@ -68,6 +70,7 @@ async def test():
              f"eps = {eps};" + '\n'
 
     data = session.evaluate(params + wolfram_code)
+    print(params)
 
     '''
             
