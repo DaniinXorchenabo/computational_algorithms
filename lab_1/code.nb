@@ -1,12 +1,20 @@
 
 pFunc[arr_, x_] := (result = 0;
-                        For[i = 1, Count[arr,_] >= i, i++, result = (result * x) + Part[arr, i]; ]; 
-                        result);
+                    For[
+                        i = 1,
+                        Count[arr,_] >= i,
+                        i++,
+                        result = (result * x) + Part[arr, i];
+                    ];
+                    result = If[x == 0,  Part[arr, i], result];
+                    result
+                 );
 
 sinX[oldX_, eps_] := (
-        x = Mod[Abs[oldX], 2 * Pi] * (oldX / Abs[oldX]);
-        x = If[Abs[x] >= Pi, -Mod[Abs[x], Pi], Mod[Abs[x], Pi]] * (oldX / Abs[oldX]);
-        x = If[Abs[x] > Pi / 2, Pi - Abs[x], x]* (oldX / Abs[oldX]);
+        x = Mod[Abs[oldX], 2 * Pi] * If[oldX == 0, 1, (oldX / Abs[oldX])];
+        x = If[Abs[x] >= Pi, -Mod[Abs[x], Pi], Mod[Abs[x], Pi]] * If[oldX == 0, 1, (oldX / Abs[oldX])];
+        x = If[Abs[x] > Pi / 2, Pi - Abs[x], x]* If[oldX == 0, 1, (oldX / Abs[oldX])];
+        x = If[x == 0, 2*Pi, x];
         x = x;
         u = x;
         result = 0;
@@ -20,7 +28,26 @@ sinX[oldX_, eps_] := (
         N[result, 20]
 );
     
-cosX[oldX_, eps_] := (sinX[oldX + Pi/2, eps]);
+cosX[oldX_, eps_] := (
+        x = oldX + Pi/2;
+        x = Mod[Abs[x], 2 * Pi] * If[oldX == 0, 1, (oldX / Abs[oldX])];
+        x = If[Abs[x] >= Pi, -Mod[Abs[x], Pi], Mod[Abs[x], Pi]] * If[oldX == 0, 1, (oldX / Abs[oldX])];
+        x = If[Abs[x] > Pi / 2, Pi - Abs[x], x]* If[oldX == 0, 1, (oldX / Abs[oldX])];
+        x = If[x == 0, 2*Pi, x];
+        x = If[oldX == 0, 5*Pi/2, x];
+        x = x;
+        u = x;
+        result = 0;
+        k=0;
+        For[k = 0,
+            (Abs[u] > eps) || (k < 2),
+            u = -1 * x ^2 * u / (2 * k * (2 * k + 1)),
+            k++;
+            result += u;
+            ];
+        {N[result, 20], N[u, 20], k, N[x, 20]};
+        N[result, 20]
+);
 
 expX[x_, eps_] := (
     result = 0;
@@ -34,6 +61,6 @@ expX[x_, eps_] := (
     N[result, 20]
 );
 
+{pFunc[arr1, x1] ,  pFunc[arr2, x2] , (pFunc[arr1, x1] / pFunc[arr2, x2])};
 {pFunc[arr1, x1], pFunc[arr2, x2], sinX[cosArg, eps], cosX[sinArg, eps], expX[expArg, eps]};
-N[pFunc[arr1, x1] / pFunc[arr2, x2] * sinX[cosArg, eps] + cosX[sinArg, eps] / expArg * expX[expArg, eps], 20]
-
+N[(pFunc[arr1, x1] / pFunc[arr2, x2] * sinX[sinArg, eps]) + (cosX[cosArg, eps] / (expArg * expX[expArg, eps])), 20]

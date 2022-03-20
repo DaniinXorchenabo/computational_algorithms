@@ -11,6 +11,7 @@ from wolframclient.serializers import export
 from fastapi import FastAPI, Path, Query
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+from wolframclient.language.expression import WLFunction
 
 session: WolframCloudAsyncSession | None = None
 wolfram_code: str | None = None
@@ -74,6 +75,7 @@ async def test(p1: list[float] = Query([0]), p2: list[float] = Query([0]),
     print(data)
     awaited_data = await data
     print(awaited_data)
+
     return awaited_data
 
 

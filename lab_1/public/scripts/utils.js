@@ -2,7 +2,7 @@ const get_all_input_items = (event) => {
     const p1 = document.getElementById('P1_data');
     const p2 = document.getElementById('P2_data');
     const p1_arg = document.getElementById('P1_arg');
-    const p2_arg = document.getElementById('P2_arg');
+    const p2_arg = document.getElementById('P1_arg');
 
     const sin_ = document.getElementById('sin_data');
     const cos_ = document.getElementById('cos_data');

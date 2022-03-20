@@ -23,10 +23,17 @@
 
     <div class="child input_box_parent">
         <div class="array_box">
-            <h2>Данные для первого (верхнего) многочлена</h2>
+            <h2>Данные для многочленов</h2>
             <div class="input_box">
-                <test>Введите аргументы многочлена</test>
+                <test>Введите аргументы первого многочлена</test>
                 <input id="P1_data" value=""
+                       oninput="corrected_a_set_of_numbers(event)"
+                       onchange="corrected_a_set_of_numbers(event)"
+                       placeholder="через запятую, начиная с нулевой степени">
+            </div>
+            <div class="input_box">
+                <test>Введите аргументы второго многочлена</test>
+                <input id="P2_data" value=""
                        oninput="corrected_a_set_of_numbers(event)"
                        onchange="corrected_a_set_of_numbers(event)"
                        placeholder="через запятую, начиная с нулевой степени">
@@ -40,23 +47,6 @@
             </div>
         </div>
 
-        <div class="array_box">
-            <h2>Данные для второго (нижнего) многочлена</h2>
-            <div class="input_box">
-                <test>Введите аргументы многочлена</test>
-                <input id="P2_data" value=""
-                       oninput="corrected_a_set_of_numbers(event)"
-                       onchange="corrected_a_set_of_numbers(event)"
-                       placeholder="через запятую, начиная с нулевой степени">
-            </div>
-            <div class="input_box">
-                <test>Введите значение аргумента</test>
-                <input id="P2_arg" value="0"
-                       oninput="correcting_number(event)"
-                       onchange="corrected_number(event)"
-                       placeholder=""/>
-            </div>
-        </div>
         <h2>Другие данные</h2>
         <div class="array_box">
             <div class="input_box">

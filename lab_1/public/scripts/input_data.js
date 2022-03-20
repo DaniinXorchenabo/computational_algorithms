@@ -6,7 +6,7 @@ const draw_formula = (event, result=null) => {
     const cos_ = document.getElementById('cos_data').value;
     const exp = document.getElementById('exp_data').value;
     document.getElementById('main_formula').innerText =
-        `$$\\frac{${create_P('P1_data')}}{${create_P('P2_data')}} * sin(${sin_}) * \\frac{cos(${cos_})}{{${exp}}*e^{${exp}}}${result?'=' + result:''}$$`;
+        `$$\\frac{${create_P('P1_data')}}{${create_P('P2_data')}} * sin(${sin_}) + \\frac{cos(${cos_})}{{${exp}}*e^{${exp}}}${result?'=' + result:''}$$`;
 
     MathJax.typeset();
 }
