@@ -6,8 +6,10 @@ import uvicorn
 from dotenv import load_dotenv
 from wolframclient.evaluation import WolframCloudAsyncSession, SecuredAuthenticationKey
 from fastapi import FastAPI
+from wolframclient.serializers import export
 
 session: WolframCloudAsyncSession | None = None
+wolfram_code: str | None = None
 
 app = FastAPI()
 
@@ -31,6 +33,13 @@ async def create_connection_with_wolfram():
     session.authorized()
 
 
+@app.on_event('startup')
+async def get_wolfram_code_from_file():
+    global wolfram_code
+    with open('code.nb', 'r', encoding='utf-8') as f:
+        wolfram_code = f.read()
+
+
 @app.on_event('shutdown')
 async def create_connection_with_wolfram():
     global session
@@ -39,8 +48,44 @@ async def create_connection_with_wolfram():
 
 @app.get('/calculate')
 async def test():
-    return await session.evaluate("100!")
+    global wolfram_code
+    with open('code.nb', 'r', encoding='utf-8') as f:
+        wolfram_code = f.read()
+    P1 = [1, 5, 7, 8]
+    P2 = [4,7,0,3]
+    P1_x = 2
+    P2_x = 3
+    t = 5
+    sin_arg = 1
+    cos_arg = 1
+    eps = 10**-8
+    params = f"sinArg = {sin_arg};" \
+             f"cosArg = {cos_arg};" \
+             f"arr1 = {'{'} {', '.join(map(str, P1))} {'}'};" \
+             f"x1 = {P1_x};" \
+             f"arr2 = {'{'} {', '.join(map(str, P2))} {'}'};" \
+             f"x2 = {P2_x};" \
+             f"eps = {eps};" + '\n'
+
+    data = session.evaluate(params + wolfram_code)
+
+    '''
+            
+    ;
+    a = 0.41714;
+    sinX[a, 10^-8]
+
+            
+    x = Mod[x, 2 * N[Pi, 50]];
+            x = If[x >= N[Pi, 50], -Mod[x, N[Pi, 50]], Mod[x, N[Pi, 50]]];
+        
+    '''
+    print(type(data), data, dir(data), {i: getattr(data, i) for i in dir(data)})
+    data = await data
+    print(type(data), data, dir(data), {i: getattr(data, i) for i in dir(data)})
+
+    return data
 
 
 if __name__ == '__main__':
-    uvicorn.run("main:app", host="localhost", port=9010, reload=True)
+    uvicorn.run("main:app", host="localhost", port=9010, reload=True, reload_includes=['*.py', '*.nb'])
