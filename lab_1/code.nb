@@ -1,12 +1,8 @@
 
-arr1 = {1,2,3};
-x1 = 2;
-arr2 = {1,-2,4};
-x2 = 3;
 pFunc[arr_, x_] := (result = 0;
                         For[i = 1, Count[arr,_] >= i, i++, result = (result * x) + Part[arr, i]; ]; 
                         result);
-pFunc[arr1, x1] + pFunc[arr2, x2];
+
 sinX[oldX_, eps_] := (
         x = Mod[Abs[oldX], 2 * Pi] * (oldX / Abs[oldX]);
         x = If[Abs[x] >= Pi, -Mod[Abs[x], Pi], Mod[Abs[x], Pi]] * (oldX / Abs[oldX]);
@@ -26,5 +22,5 @@ sinX[oldX_, eps_] := (
     
 cosX[oldX_, eps_] := (sinX[oldX + Pi/2, eps]);
     
-{cosX[9, 10^-8], sinX[9, 10^-8], sinArg, cosArg, cosX[sinArg, 10^-8], sinX[cosArg, 10^-8]}
+{pFunc[arr1, x1], pFunc[arr2, x2], sinX[cosArg, eps], cosX[sinArg, eps]}
 
