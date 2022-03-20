@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Лабораторная работа по вычислительным алгоритмам № 2</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer src="scripts/input_data.js"></script>
+    <link rel="stylesheet" href="styles/inputs.css">
+</head>
+<body>
+<input id="P1_data" value=""
+       oninput="correcting_number(event)"
+       onchange="corrected_number(event)">
+<input id="P2_data" value=""
+       oninput="correcting_number(event)"
+       onchange="corrected_number(event)">
+    <p id="main_formula">$$\sum_{i=0}^n i^2 = \frac{(n^2+n)(2n+1)}{6}$$</p>
+</body>
+</html>

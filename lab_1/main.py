@@ -1,12 +1,16 @@
 import os
-from os.path import dirname, join
+from os.path import dirname, join, split
 import asyncio
 import uvicorn
+from decimal import Decimal
 
 from dotenv import load_dotenv
 from wolframclient.evaluation import WolframCloudAsyncSession, SecuredAuthenticationKey
 from fastapi import FastAPI
 from wolframclient.serializers import export
+from fastapi import FastAPI, Path
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 session: WolframCloudAsyncSession | None = None
 wolfram_code: str | None = None
@@ -47,48 +51,29 @@ async def create_connection_with_wolfram():
 
 
 @app.get('/calculate')
-async def test():
+async def test(p1: list[Decimal] = None, p2: list[Decimal] = None,
+               p1_x: Decimal = 0, p2_x: Decimal = 0,
+               sin_arg: Decimal = 0, cos_arg: Decimal = 0, exp_arg: Decimal = 1,
+               eps='10^-8'):
+    p1: list[int] = [0] if p1 is None else p1
+    p2: list[int] = [0] if p2 is None else p2
     global wolfram_code
     with open('code.nb', 'r', encoding='utf-8') as f:
         wolfram_code = f.read()
-    P1 = [1, 5, 7, 8]
-    P2 = [4,7,0,3]
-    P1_x = 2
-    P2_x = 3
-    t = 5
-    sin_arg = 1
-    cos_arg = 1
-    eps = '10^-8'
-    exp_arg = 1
     params = f"sinArg = {sin_arg};" \
              f"cosArg = {cos_arg};" \
              f"expArg = {exp_arg};" \
-             f"arr1 = {'{'} {', '.join(map(str, P1))} {'}'};" \
-             f"x1 = {P1_x};" \
-             f"arr2 = {'{'} {', '.join(map(str, P2))} {'}'};" \
-             f"x2 = {P2_x};" \
+             f"arr1 = {'{'} {', '.join(map(str, p1))} {'}'};" \
+             f"x1 = {p1_x};" \
+             f"arr2 = {'{'} {', '.join(map(str, p2))} {'}'};" \
+             f"x2 = {p2_x};" \
              f"eps = {eps};" + '\n'
 
     data = session.evaluate(params + wolfram_code)
-    print(params)
+    return await data
 
-    '''
-            
-    ;
-    a = 0.41714;
-    sinX[a, 10^-8]
 
-            
-    x = Mod[x, 2 * N[Pi, 50]];
-            x = If[x >= N[Pi, 50], -Mod[x, N[Pi, 50]], Mod[x, N[Pi, 50]]];
-        
-    '''
-    print(type(data), data, dir(data), {i: getattr(data, i) for i in dir(data)})
-    data = await data
-    print(type(data), data, dir(data), {i: getattr(data, i) for i in dir(data)})
-
-    return data
-
+app.mount("/public", StaticFiles(directory=join(split(__file__)[0], 'public')), name="static")
 
 if __name__ == '__main__':
     uvicorn.run("main:app", host="localhost", port=9010, reload=True, reload_includes=['*.py', '*.nb'])
