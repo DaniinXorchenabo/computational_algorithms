@@ -28,7 +28,17 @@ gaussMethod[mm_, n_] := (
             internalMatrix[[i1 ;; i1, ;;]] = internalMatrix[[i1 ;; i1, ;;]] - (internalMatrix[[i ;; i, ;;]] * internalMatrix[[i1, i]]);
         ];
     ];
-
+    For[
+        i = 0,
+        i < n,
+        i++;
+        For[
+            j = 0,
+            j < n + 1,
+            j++;
+            internalMatrix[[i, j]] = N[internalMatrix[[i, j]], 100];
+        ];
+    ];
     internalMatrix
 );
 

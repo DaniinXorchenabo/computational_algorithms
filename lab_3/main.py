@@ -59,6 +59,7 @@ async def test(n: int = 10, min_: Decimal = -10, max_: Decimal = 10, eps='10^-20
     with open('code.nb', 'r', encoding='utf-8') as f:
         wolfram_code = f.read()
 
+    # How to update part in matrix see: https://reference.wolfram.com/language/howto/UpdatePartsOfAMatrix.html
     params = f'n = {n};' \
              f'minValue = {min_};' \
              f'maxValue = {max_};' \
@@ -72,7 +73,7 @@ async def test(n: int = 10, min_: Decimal = -10, max_: Decimal = 10, eps='10^-20
 
     # awaited_data.tolist()
 
-    return ([', '.join(map(lambda i: str(round(i, 3)).center(9), i)) for i in list(awaited_data.tolist())] if hasattr(awaited_data, 'tolist') else awaited_data)
+    return ([','.join(map(lambda i: str(round(i, 30)).center(20), i)) for i in awaited_data] if hasattr(awaited_data, 'tolist') else awaited_data)
 
 
 app.mount("/public", StaticFiles(directory=join(split(__file__)[0], 'public')), name="static")
