@@ -72,7 +72,7 @@ async def test(n: int = 10, min_: Decimal = -10, max_: Decimal = 10, eps='10^-20
 
     # awaited_data.tolist()
 
-    return ([', '.join(map(lambda i: str(round(i, 3)).center(6), i)) for i in list(awaited_data.tolist())] if hasattr(awaited_data, 'tolist') else awaited_data)
+    return ([', '.join(map(lambda i: str(round(i, 3)).center(9), i)) for i in list(awaited_data.tolist())] if hasattr(awaited_data, 'tolist') else awaited_data)
 
 
 app.mount("/public", StaticFiles(directory=join(split(__file__)[0], 'public')), name="static")
