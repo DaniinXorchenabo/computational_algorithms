@@ -2,18 +2,20 @@ myMatrix = RandomReal[{minValue, maxValue}, {n, n + 1}];
 gaussMethod[mm_, n_] := (
     internalMatrix = mm;
     i = 0;
-    s = {234,0,1,1,1,1,11,1,1,1,1,1,1,1,1,1,1,1,1,1};
+    s = {"start" -> internalMatrix};
 
     For[
         i = 0,
         i < n,
         i++;
         internalMatrix[[i ;; i, ;;]] = internalMatrix[[i ;; i, ;;]] / internalMatrix[[i, i]] ;
+        s = Append[s, {"division " <> ToString[i] <> "th string" -> internalMatrix}];
         For[
             i1 = i,
             i1 < n,
             i1++;
             internalMatrix[[i1 ;; i1, ;;]] = internalMatrix[[i1 ;; i1, ;;]] - (internalMatrix[[i ;; i, ;;]] * internalMatrix[[i1, i]]);
+            s = Append[s, {ToString[i] <> "th string - " <> ToString[i1] <> "th string" -> internalMatrix}];
         ];
     ];
 
@@ -26,6 +28,7 @@ gaussMethod[mm_, n_] := (
             i1 > 1,
             i1--;
             internalMatrix[[i1 ;; i1, ;;]] = internalMatrix[[i1 ;; i1, ;;]] - (internalMatrix[[i ;; i, ;;]] * internalMatrix[[i1, i]]);
+            s = Append[s, {ToString[i] <> "th string * (" <> ToString[i1] <> ", " <> ToString[i] <> ") element - " <> ToString[i1] <> "th string" -> internalMatrix}];
         ];
     ];
     For[
@@ -39,7 +42,8 @@ gaussMethod[mm_, n_] := (
             internalMatrix[[i, j]] = N[internalMatrix[[i, j]], 100];
         ];
     ];
-    internalMatrix
+    s = Append[s, {"result" -> internalMatrix}];
+    s
 );
 
 resultMatrix = gaussMethod[myMatrix, n];

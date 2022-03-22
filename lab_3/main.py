@@ -14,6 +14,8 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from wolframclient.language.expression import WLFunction
 from wolframclient.utils.packedarray import PackedArray
+from wolframclient.exception import RequestException
+
 
 session: WolframCloudAsyncSession | None = None
 wolfram_code: str | None = None
@@ -65,15 +67,32 @@ async def test(n: int = 10, min_: Decimal = -10, max_: Decimal = 10, eps='10^-20
              f'maxValue = {max_};' \
              f'eps = {eps};'
     print(params)
+    try:
+        data = session.evaluate(params + wolfram_code)
+        print(data)
+        awaited_data: PackedArray = await data
+    except RequestException as e:
+        print([e, e.args, e.msg])
+        if 'status: 401' in e.msg or 'status: 401' in e.args[0]:
+            await create_connection_with_wolfram()
+            data = session.evaluate(params + wolfram_code)
+            awaited_data: PackedArray = await data
+        else:
+            raise e from e
 
-    data = session.evaluate(params + wolfram_code)
-    print(data)
-    awaited_data: PackedArray = await data
-    print(awaited_data, type(awaited_data))
+    print(type(awaited_data), type(awaited_data[0]), awaited_data)
 
-    # awaited_data.tolist()
+    def normalized_result(awaited_data_):
+        res_ = awaited_data_
+        if isinstance(awaited_data_, (list, set, tuple, frozenset)) and any(isinstance(i, WLFunction) for i in awaited_data_):
+            res_ = [([normalized_result(j) for j in i.args] if isinstance(i, WLFunction) else normalized_result(i)) for i in awaited_data_]
+        if hasattr(awaited_data_, 'tolist'):
+            res_ = [','.join(map(lambda i: str(round(i, 30)).center(20), i)) for i in awaited_data_]
+        return res_
 
-    return ([','.join(map(lambda i: str(round(i, 30)).center(20), i)) for i in awaited_data] if hasattr(awaited_data, 'tolist') else awaited_data)
+    res = normalized_result(awaited_data)
+
+    return res
 
 
 app.mount("/public", StaticFiles(directory=join(split(__file__)[0], 'public')), name="static")
