@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Лабораторная работа по вычислительным алгоритмам № 2</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer src="scripts/utils.js"></script>
+    <script defer src="scripts/input_data.js"></script>
+    <script defer src="scripts/to_server.js"></script>
+    <link rel="stylesheet" href="styles/inputs.css">
+    <link rel="stylesheet" href="styles/base_styles.css">
+    <link rel="stylesheet" href="styles/layout_stiles.css">
+
+
+</head>
+<body>
+
+<h1>Лабораторная работа по вычислительным алгоритмам № 2</h1>
+
+<p id="main_formula">$$\frac{0}{0}$$</p>
+<div class="parent_box">
+
+    <div class="child input_box_parent">
+        <div class="array_box">
+            <h2>Данные для многочленов</h2>
+            <div class="input_box">
+                <test>Введите аргументы первого многочлена</test>
+                <input id="P1_data" value=""
+                       oninput="corrected_a_set_of_numbers(event)"
+                       onchange="corrected_a_set_of_numbers(event)"
+                       placeholder="через запятую, начиная с нулевой степени">
+            </div>
+            <div class="input_box">
+                <test>Введите аргументы второго многочлена</test>
+                <input id="P2_data" value=""
+                       oninput="corrected_a_set_of_numbers(event)"
+                       onchange="corrected_a_set_of_numbers(event)"
+                       placeholder="через запятую, начиная с нулевой степени">
+            </div>
+            <div class="input_box">
+                <test>Введите значение аргумента</test>
+                <input id="P1_arg" value="0"
+                       oninput="correcting_number(event)"
+                       onchange="corrected_number(event)"
+                       placeholder=""/>
+            </div>
+        </div>
+
+        <h2>Другие данные</h2>
+        <div class="array_box">
+            <div class="input_box">
+                <test>Значение аргумента синуса</test>
+                <input id="sin_data" value="0"
+                       oninput="correcting_number(event)"
+                       onchange="corrected_number(event)"
+                       placeholder="">
+            </div>
+        </div>
+
+        <div class="array_box">
+            <div class="input_box">
+                <test>Значение аргумента косинуса</test>
+                <input id="cos_data" value="0"
+                       oninput="correcting_number(event)"
+                       onchange="corrected_number(event)"
+                       placeholder="">
+            </div>
+        </div>
+
+        <div class="array_box">
+            <div class="input_box">
+                <test>Значение аргумента экспоненциальной функции</test>
+                <input id="exp_data" value="0"
+                       oninput="correcting_number(event)"
+                       onchange="corrected_number(event)"
+                       placeholder="">
+            </div>
+        </div>
+
+        <div class="array_box">
+            <h2></h2>
+            <button id="send_button" disabled>Посчитать</button>
+
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
