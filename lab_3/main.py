@@ -80,19 +80,21 @@ async def test(n: int = 10, min_: Decimal = -10, max_: Decimal = 10, eps='10^-20
         else:
             raise e from e
 
-    print(type(awaited_data), type(awaited_data[0]), awaited_data)
+    print(type(awaited_data), type(awaited_data[0][0]), awaited_data)
 
     def normalized_result(awaited_data_):
         res_ = awaited_data_
-        if isinstance(awaited_data_, (list, set, tuple, frozenset)) and any(isinstance(i, WLFunction) for i in awaited_data_):
-            res_ = [([normalized_result(j) for j in i.args] if isinstance(i, WLFunction) else normalized_result(i)) for i in awaited_data_]
+        if isinstance(awaited_data_, (list, set, tuple, frozenset)):
+            res_ = [normalized_result(i) for i in awaited_data_]
+        if isinstance(awaited_data_, WLFunction):
+            res_ = [normalized_result(j) for j in awaited_data_.args]
         if hasattr(awaited_data_, 'tolist'):
             res_ = [','.join(map(lambda i: str(round(i, 30)).center(20), i)) for i in awaited_data_]
         return res_
 
     res = normalized_result(awaited_data)
 
-    return res
+    return {i[0][0]: i[0][1] for i in res}
 
 
 app.mount("/public", StaticFiles(directory=join(split(__file__)[0], 'public')), name="static")

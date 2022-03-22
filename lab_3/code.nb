@@ -2,7 +2,8 @@ myMatrix = RandomReal[{minValue, maxValue}, {n, n + 1}];
 gaussMethod[mm_, n_] := (
     internalMatrix = mm;
     i = 0;
-    s = {"start" -> internalMatrix};
+    s = {};
+    s = Append[s, {"start" -> internalMatrix}];
 
     For[
         i = 0,
