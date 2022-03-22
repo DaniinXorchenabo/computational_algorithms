@@ -10,6 +10,7 @@ from wolframclient.evaluation import WolframCloudAsyncSession, SecuredAuthentica
 from fastapi import FastAPI
 from wolframclient.serializers import export
 from fastapi import FastAPI, Path, Query
+from fastapi.responses import RedirectResponse
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from wolframclient.language.expression import WLFunction
@@ -66,13 +67,12 @@ async def test(n: int = 10, min_: Decimal = -10, max_: Decimal = 10, eps='10^-20
              f'minValue = {min_};' \
              f'maxValue = {max_};' \
              f'eps = {eps};'
-    print(params)
+    # print(params)
     try:
         data = session.evaluate(params + wolfram_code)
-        print(data)
+        # print(data)
         awaited_data: PackedArray = await data
     except RequestException as e:
-        print([e, e.args, e.msg])
         if 'status: 401' in e.msg or 'status: 401' in e.args[0]:
             await create_connection_with_wolfram()
             data = session.evaluate(params + wolfram_code)
@@ -80,7 +80,7 @@ async def test(n: int = 10, min_: Decimal = -10, max_: Decimal = 10, eps='10^-20
         else:
             raise e from e
 
-    print(type(awaited_data), type(awaited_data[0][0]), awaited_data)
+    # print(type(awaited_data), type(awaited_data[0][0]), awaited_data)
 
     def normalized_result(awaited_data_):
         res_ = awaited_data_
@@ -89,12 +89,17 @@ async def test(n: int = 10, min_: Decimal = -10, max_: Decimal = 10, eps='10^-20
         if isinstance(awaited_data_, WLFunction):
             res_ = [normalized_result(j) for j in awaited_data_.args]
         if hasattr(awaited_data_, 'tolist'):
-            res_ = [','.join(map(lambda i: str(round(i, 30)).center(20), i)) for i in awaited_data_]
+            res_ = [list(map(lambda i: str(round(i, 30)), i)) for i in awaited_data_]
         return res_
 
     res = normalized_result(awaited_data)
 
     return {i[0][0]: i[0][1] for i in res}
+
+
+@app.get('/')
+async def root_f():
+    return RedirectResponse('/public/index.html')
 
 
 app.mount("/public", StaticFiles(directory=join(split(__file__)[0], 'public')), name="static")

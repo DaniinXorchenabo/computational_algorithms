@@ -26,10 +26,11 @@
 	align-items: stretch;
 	justify-content: center;
     flex-direction: column ;
+	width: 95%;
 }
 
 .array_box{
-	max-width: 400px;
+	max-width: 100%;
     text-align: center;
 	display: flex;
 	flex-wrap: nowrap;

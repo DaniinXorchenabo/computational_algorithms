@@ -12,77 +12,20 @@
     <link rel="stylesheet" href="styles/base_styles.css">
     <link rel="stylesheet" href="styles/layout_stiles.css">
 
+    <link rel="stylesheet" href="styles/hide_and_show.css">
+    <link rel="stylesheet" href="styles/table.css">
+
 
 </head>
 <body>
 
-<h1>Лабораторная работа по вычислительным алгоритмам № 2</h1>
+<h1>Лабораторная работа по вычислительным алгоритмам № 3</h1>
 
-<p id="main_formula">$$\frac{0}{0}$$</p>
+
 <div class="parent_box">
 
-    <div class="child input_box_parent">
-        <div class="array_box">
-            <h2>Данные для многочленов</h2>
-            <div class="input_box">
-                <test>Введите аргументы первого многочлена</test>
-                <input id="P1_data" value=""
-                       oninput="corrected_a_set_of_numbers(event)"
-                       onchange="corrected_a_set_of_numbers(event)"
-                       placeholder="через запятую, начиная с нулевой степени">
-            </div>
-            <div class="input_box">
-                <test>Введите аргументы второго многочлена</test>
-                <input id="P2_data" value=""
-                       oninput="corrected_a_set_of_numbers(event)"
-                       onchange="corrected_a_set_of_numbers(event)"
-                       placeholder="через запятую, начиная с нулевой степени">
-            </div>
-            <div class="input_box">
-                <test>Введите значение аргумента</test>
-                <input id="P1_arg" value="0"
-                       oninput="correcting_number(event)"
-                       onchange="corrected_number(event)"
-                       placeholder=""/>
-            </div>
-        </div>
+    <div class="child input_box_parent" id="matrix_content">
 
-        <h2>Другие данные</h2>
-        <div class="array_box">
-            <div class="input_box">
-                <test>Значение аргумента синуса</test>
-                <input id="sin_data" value="0"
-                       oninput="correcting_number(event)"
-                       onchange="corrected_number(event)"
-                       placeholder="">
-            </div>
-        </div>
-
-        <div class="array_box">
-            <div class="input_box">
-                <test>Значение аргумента косинуса</test>
-                <input id="cos_data" value="0"
-                       oninput="correcting_number(event)"
-                       onchange="corrected_number(event)"
-                       placeholder="">
-            </div>
-        </div>
-
-        <div class="array_box">
-            <div class="input_box">
-                <test>Значение аргумента экспоненциальной функции</test>
-                <input id="exp_data" value="0"
-                       oninput="correcting_number(event)"
-                       onchange="corrected_number(event)"
-                       placeholder="">
-            </div>
-        </div>
-
-        <div class="array_box">
-            <h2></h2>
-            <button id="send_button" disabled>Посчитать</button>
-
-        </div>
     </div>
 
 </div>
