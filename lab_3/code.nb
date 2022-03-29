@@ -54,9 +54,11 @@ discrepancy[mm_, n_, eps_] := (
 
     result = (gaussMethod[fullMatrix, n, s, "Исходная матрица"])[[-1, 1, 2]];
 
+    run = 1 == 1;
+    runs = {};
     For[
         countIteration = 0,
-        countIteration < 2,
+        run || countIteration < 3,
         countIteration++;
 
         aMatrix = fullMatrix[[;;, ;; n]];
@@ -74,6 +76,14 @@ discrepancy[mm_, n_, eps_] := (
         fullMatrix = result;
         fullMatrix[[;;, n+1 ;; n+1]] = xVector + xrVector;
         s = Append[s, {ToString[countIteration] <>" - " <> "Матрица после поправки № " <> ToString[countIteration] -> fullMatrix}];
+        run = 1 != 1;
+        For[
+            i = 0,
+            i < n,
+            i++;
+            run = run || (result[[i, -1]] > eps);
+            runs = Append[runs, run]
+        ];
     ];
     s
 

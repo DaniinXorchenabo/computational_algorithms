@@ -57,7 +57,7 @@ async def create_connection_with_wolfram():
 
 
 @app.get('/calculate', response_model=list[list[Decimal]] | Any)
-async def test(n: int = 10, min_: Decimal = -10, max_: Decimal = 10, eps='10^-20'):
+async def test(n: int = 10, min_: Decimal = -10, max_: Decimal = 10, eps='10^-13'):
     global wolfram_code
     with open('code.nb', 'r', encoding='utf-8') as f:
         wolfram_code = f.read()
@@ -73,7 +73,7 @@ async def test(n: int = 10, min_: Decimal = -10, max_: Decimal = 10, eps='10^-20
         # print(data)
         awaited_data: PackedArray = await data
     except RequestException as e:
-        if 'status: 401' in e.msg or 'status: 401' in e.args[0]:
+        if e.response.response.status == 401:
             await create_connection_with_wolfram()
             data = session.evaluate(params + wolfram_code)
             awaited_data: PackedArray = await data
