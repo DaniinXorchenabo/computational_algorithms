@@ -13,7 +13,7 @@ from fastapi import FastAPI, Path, Query
 from fastapi.responses import RedirectResponse
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-from wolframclient.language.expression import WLFunction
+from wolframclient.language.expression import WLFunction, WLSymbol
 from wolframclient.utils.packedarray import PackedArray
 from wolframclient.exception import RequestException
 
@@ -92,9 +92,11 @@ async def test(n: int = 10, min_: Decimal = -10, max_: Decimal = 10, eps='10^-20
             res_ = [list(map(lambda i: str(round(i, 30)), i)) for i in awaited_data_]
         return res_
 
-    res = normalized_result(awaited_data)
+    res: WLSymbol = normalized_result(awaited_data)
+    print(awaited_data, sep='\n')
 
     return {i[0][0]: i[0][1] for i in res}
+    # return {"": res}
 
 
 @app.get('/')
