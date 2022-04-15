@@ -1,6 +1,8 @@
 
 
 function[x_] := Log[x] - 1 / (x + 1);
+functionD[x_] = D[Log[x] - 1 / (x + 1), x];
+functionD2[x_] = D[D[Log[x] - 1 / (x + 1), x], x];
 
 getRootIntervals[a_, b_, n_, eps_] := (
     Xes = {};
@@ -60,17 +62,44 @@ rootCorrectionAs2Division[beginOld_, endOld_, eps_] := (
 
 );
 
+NewtonsMethodRootCorrector[beginOld_, endOld_, eps_] := (
+    begin = beginOld;
+    end = endOld;
+    x0 = If[functionD2[begin] * function[begin] > 0, begin, end];
+    lastX = x0 * 100;
+    For[
+        i = 0,
+        (Abs[x0 - lastX] > eps),
+        lastX = x0;
+        x0 = x0 - (function[x0] / functionD[x0])
+    ];
+    N[x0, 20]
+);
+
 getAllRoots[a ,b, n, eps] := (
     IntervalsMatrix = getRootIntervals[a ,b, n, eps];
-    roots = {};
+    answer = {};
+    roots1 = {};
     For[
         j = 0,
         j < Length[IntervalsMatrix],
         j++;
         res = rootCorrectionAs2Division[1, 2 ,eps];
-        roots = Append[roots, res]
+        roots1 = Append[roots1, res]
     ];
-    roots
+    answer = Append[answer, "rootCorrectionAs2Division" -> roots1];
+
+    roots2 = {};
+    For[
+        k = 0,
+        k < Length[IntervalsMatrix],
+        k++;
+        res = NewtonsMethodRootCorrector[1, 2 ,eps];
+        roots2 = Append[roots2, res]
+    ];
+
+    answer = Append[answer, "NewtonsMethod" -> roots2];
+    answer
 
 );
 
