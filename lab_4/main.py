@@ -96,7 +96,7 @@ async def test(n: int = 10, a: Decimal = 0, b: Decimal = 100, eps='10^-4'):
     res: WLSymbol = normalized_result(awaited_data)
     print(awaited_data, sep='\n')
 
-    return res
+    return {i[0]: i[1] for i in res}
 
 
 @app.get('/')

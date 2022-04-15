@@ -11,7 +11,9 @@ setTimeout(() => {
             console.log(xhr.status + ': ' + xhr.statusText);
         } else {
             console.log(xhr.responseText);
-            document.getElementById('matrix_content').innerHTML = xhr.responseText;
+            const data = JSON.parse(xhr.responseText);
+            document.getElementById('rootCorrectionAs2Division').innerHTML = [...data["rootCorrectionAs2Division"]].reduce((last, i) => last + ", " + i) ;
+            document.getElementById('NewtonsMethod').innerHTML = [...data["NewtonsMethod"]].reduce((last, i) => last + ", " + i) ;
         }
     }
 });
