@@ -21,7 +21,7 @@ getRootIntervals[a_, b_, n_, eps_] := (
     ];
 
     rootIntervals = {};
-
+    resultData = {};
     For[
         i = 0,
         i <= n,
@@ -30,6 +30,11 @@ getRootIntervals[a_, b_, n_, eps_] := (
             Ys[[i]]*Ys[[i + 1]] < 0,
             rootIntervals = Append[rootIntervals, {Xes[[i]], Xes[[i + 1]]}],
             0
+        ];
+        If[
+            Ys[[i]]*Ys[[i + 1]] < 0,
+            resultData = Append[resultData, "Интервал (" <> ToString[Xes[[i]]] <> ", " <> ToString[Xes[[i + 1]]] <> ")" -> "Подходит, потому что "<> ToString[N[Ys[[i]]]] <> " * " <> ToString[N[Ys[[i + 1]]]] <> " < 0"],
+            resultData = Append[resultData, "Интервал (" <> ToString[Xes[[i]]] <> ", " <> ToString[Xes[[i + 1]]] <> ")" -> "Не подходит, потому что "<> ToString[N[Ys[[i]]]] <> " * " <> ToString[N[Ys[[i + 1]]]] <> " > 0"]
         ]
     ];
 
@@ -39,7 +44,7 @@ getRootIntervals[a_, b_, n_, eps_] := (
         i++;
         Ys[[i]] = N[Ys[[i]], 20]
     ];
-    rootIntervals
+    {rootIntervals, resultData}
 
 );
 
@@ -47,17 +52,22 @@ rootCorrectionAs2Division[beginOld_, endOld_, eps_] := (
     begin = beginOld;
     end = endOld;
     x0 = begin;
+    results = {};
     For[
         i = 0,
         (Abs[end - begin] > eps) && (function[x0] != 0) ,
         x0 = (begin + end) / 2;
+        results = Append[results, "Метод половинного деления: следующий интервал - ("<> ToString[N[begin]] <> ", " <> ToString[N[end]] <> ")" -> "середина: " <> ToString[N[x0]]];
         If[
             function[begin] * function[x0] < 0,
             end = x0,
             begin = x0
         ]
+
     ];
-    N[x0, 20]
+    results = Append[results, "Метод половинного деления: Вычисленный x0:" -> ToString[N[x0]]];
+
+    {N[x0, 20], results}
 
 
 );
@@ -67,17 +77,21 @@ NewtonsMethodRootCorrector[beginOld_, endOld_, eps_] := (
     end = endOld;
     x0 = If[functionD2[begin] * function[begin] > 0, begin, end];
     lastX = x0 * 100;
+    results = {};
     For[
         i = 0,
         (Abs[x0 - lastX] > eps),
         lastX = x0;
+        results = Append[results, "Метод Ньютона: x0: " <> ToString[N[x0 - (function[x0] / functionD[x0])]] <> " Вычисляется по формуле: " -> ToString[N[x0]] <> " - (" <> ToString[N[function[x0]]] <> " / " <> ToString[N[functionD[x0]]] <> ")" ];
         x0 = x0 - (function[x0] / functionD[x0])
+
     ];
-    N[x0, 20]
+    {N[x0, 20], results}
 );
 
 getAllRoots[a ,b, n, eps] := (
-    IntervalsMatrix = getRootIntervals[a ,b, n, eps];
+    resultFromGetIntervals = getRootIntervals[a ,b, n, eps];
+    IntervalsMatrix = resultFromGetIntervals[[1]];
     answer = {};
     roots1 = {};
     For[
@@ -85,7 +99,13 @@ getAllRoots[a ,b, n, eps] := (
         j < Length[IntervalsMatrix],
         j++;
         res = rootCorrectionAs2Division[1, 2 ,eps];
-        roots1 = Append[roots1, res]
+        roots1 = Append[roots1, res[[1]]];
+        For[
+            j1 = 0,
+            j1 < Length[res[[2]]],
+            j1++;
+            answer = Append[answer,  res[[2, j1, 1]] -> res[[2, j1, 2]]]
+        ]
     ];
     answer = Append[answer, "rootCorrectionAs2Division" -> roots1];
 
@@ -95,8 +115,21 @@ getAllRoots[a ,b, n, eps] := (
         k < Length[IntervalsMatrix],
         k++;
         res = NewtonsMethodRootCorrector[1, 2 ,eps];
-        roots2 = Append[roots2, res]
+        roots2 = Append[roots2, res[[1]]];
+        For[
+            j1 = 0,
+            j1 < Length[res[[2]]],
+            j1++;
+            answer = Append[answer,  res[[2, j1, 1]] -> res[[2, j1, 2]]]
+        ]
     ];
+    For[
+        i1 = 0,
+        i1 < Length[resultFromGetIntervals[[2]]],
+        i1++;
+        answer = Append[answer,  resultFromGetIntervals[[2, i1, 1]] -> resultFromGetIntervals[[2, i1, 2]]]
+    ];
+
 
     answer = Append[answer, "NewtonsMethod" -> roots2];
     answer

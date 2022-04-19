@@ -57,7 +57,7 @@ async def create_connection_with_wolfram():
 
 
 @app.get('/calculate', response_model=list[list[Decimal]] | Any)
-async def test(n: int = 10, a: Decimal = 0, b: Decimal = 100, eps='10^-4'):
+async def test(n: int = 10, a: Decimal = 0, b: Decimal = 100, eps='10^-8'):
     """ ln(x) - (1 /(x + 1))  = 0 => x > 0 """
     global wolfram_code
     with open('code.nb', 'r', encoding='utf-8') as f:
