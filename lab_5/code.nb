@@ -1,0 +1,160 @@
+
+gaussMethod[mm_, n_, externalS_, countIteration_] := (
+    internalMatrix = mm;
+    s = externalS;
+    i = 0;
+    s = Append[s, {ToString[countIteration] <>" -    " <> "start" -> internalMatrix}];
+
+    For[
+        i = 0,
+        i < n,
+        i++;
+        internalMatrix[[i ;; i, ;;]] = internalMatrix[[i ;; i, ;;]] / internalMatrix[[i, i]] ;
+        s = Append[s, {ToString[countIteration] <>" -    " <> "division " <> ToString[i] <> "th string" -> internalMatrix}];
+        For[
+            i1 = i,
+            i1 < n,
+            i1++;
+            internalMatrix[[i1 ;; i1, ;;]] = internalMatrix[[i1 ;; i1, ;;]] - (internalMatrix[[i ;; i, ;;]] * internalMatrix[[i1, i]]);
+            s = Append[s, {ToString[countIteration] <>" -    " <> ToString[i] <> "th string - " <> ToString[i1] <> "th string" -> internalMatrix}];
+        ];
+    ];
+
+    For[
+        i = n + 1,
+        i >= 1,
+        i--;
+        For[
+            i1 = i,
+            i1 > 1,
+            i1--;
+            internalMatrix[[i1 ;; i1, ;;]] = internalMatrix[[i1 ;; i1, ;;]] - (internalMatrix[[i ;; i, ;;]] * internalMatrix[[i1, i]]);
+            s = Append[s, {ToString[countIteration] <>" -    " <> ToString[i] <> "th string * (" <> ToString[i1] <> ", " <> ToString[i] <> ") element - " <> ToString[i1] <> "th string" -> internalMatrix}];
+        ];
+    ];
+    For[
+        i = 0,
+        i < n,
+        i++;
+        For[
+            j = 0,
+            j < n + 1,
+            j++;
+            internalMatrix[[i, j]] = internalMatrix[[i, j]];
+        ];
+    ];
+    s = Append[s, {ToString[countIteration] <>" -    " <> "result" -> internalMatrix}];
+    s
+);
+
+discrepancy[mm_, n_, eps_] := (
+    countIteration = 0;
+    s = {};
+    fullMatrix = mm;
+
+    result = (gaussMethod[fullMatrix, n, s, "Исходная матрица"])[[-1, 1, 2]];
+
+    run = 1 == 1;
+    runs = {};
+    For[
+        countIteration = 0,
+        run || countIteration < 3,
+        countIteration++;
+
+        aMatrix = fullMatrix[[;;, ;; n]];
+        bVector = fullMatrix[[;;, n+1 ;; n+1]];
+        xVector = result[[;;, n+1 ;; n+1]];
+
+        newBVector = aMatrix . xVector;
+        rVector = bVector - newBVector;
+        newFullMatrix = fullMatrix;
+        newFullMatrix[[;;, n+1 ;; n+1]] = rVector;
+
+        result = (gaussMethod[newFullMatrix, n, s, "Поправка №    " <> ToString[countIteration]])[[-1, 1, 2]];
+
+        xrVector = result[[;;, n+1 ;; n+1]];
+        fullMatrix = result;
+        fullMatrix[[;;, n+1 ;; n+1]] = xVector + xrVector;
+        s = Append[s, {ToString[countIteration] <>" - " <> "Матрица после поправки № " <> ToString[countIteration] -> fullMatrix}];
+        run = 1 != 1;
+        For[
+            i = 0,
+            i < n,
+            i++;
+            run = run || (result[[i, -1]] > eps);
+            runs = Append[runs, run]
+        ];
+    ];
+    fullMatrix
+
+);
+
+
+createMatrixx[xOld_, yOld_] := (
+    x = xOld;
+    y = yOld;
+    resultA = {};
+    resultB = {};
+    result = {};
+    For[
+        i = 0,
+        i < Length[x],
+        i++;
+        resultA = Append[resultA, {}];
+        result = Append[result, {}];
+        resultB = Append[resultB, y[[i]]]
+    ];
+
+    For[
+        i = 0,
+        i < Length[x],
+        i++;
+        For[
+            j = 0,
+            j < Length[x],
+            j++;
+            resultA[[j]] = Append[resultA[[j]], x[[j]]^(i - 1)];
+            result[[j]] = Append[result[[j]], x[[j]]^(i - 1)];
+        ];
+    ];
+
+    For[
+        i = 0,
+        i < Length[x],
+        i++;
+        result[[i]] = Append[result[[i]], resultB[[i]]];
+    ];
+
+    result
+
+);
+
+getFunction[xOld_, yOld_, eps_] := (
+    fullMatrix = createMatrixx[xOld, yOld];
+    answer = discrepancy[fullMatrix, Length[xOld], eps];
+
+    For[
+        i = 0,
+        i < Length[answer],
+        i++;
+        For[
+            j = 0,
+            j < Length[answer[[i]]],
+            j++;
+            answer[[i, j]] = N[answer[[i, j]], 20]
+        ]
+    ];
+    aArray = {};
+    For[
+        i = 0,
+        i < Length[answer],
+        i++;
+        aArray = Append[aArray, answer[[i, -1]]];
+    ];
+    aArray
+
+);
+
+resultMatrix = getFunction[xData, yData, eps];
+
+resultMatrix
