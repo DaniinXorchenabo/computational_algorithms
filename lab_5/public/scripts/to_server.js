@@ -1,4 +1,3 @@
-
 setTimeout(() => {
 
     const xhr = new XMLHttpRequest();
@@ -13,20 +12,14 @@ setTimeout(() => {
             console.log(xhr.responseText);
             const data = JSON.parse(xhr.responseText);
             console.log(data);
-            document.getElementById('rootCorrectionAs2Division').innerHTML = [...data["rootCorrectionAs2Division"]].reduce((last, i) => last + ", " + i) ;
-            document.getElementById('NewtonsMethod').innerHTML = [...data["NewtonsMethod"]].reduce((last, i) => last + ", " + i) ;
-            document.getElementById('show_ranges').innerHTML = [... Object.entries(data)]
-                .filter(([k, v]) => k.toString().startsWith("Интервал ("))
-                // .map(([key, val]) => (console.log(key, val), [key, val]))
-                .reduce((last,[k, v]) => last + `<h3>${k + " " + v.toString()}</h3>`, "");
-            document.getElementById('show_division2method').innerHTML = [... Object.entries(data)]
-                .filter(([k, v]) => k.toString().startsWith("Метод половинного деления:"))
-                // .map(([key, val]) => (console.log(key, val), [key, val]))
-                .reduce((last,[k, v]) => last + `<h3>${k + " " + v.toString()}</h3>`, "");
-            document.getElementById('show_Newthon_method').innerHTML = [... Object.entries(data)]
-                .filter(([k, v]) => k.toString().startsWith("Метод Ньютона"))
-                // .map(([key, val]) => (console.log(key, val), [key, val]))
-                .reduce((last,[k, v]) => last + `<h3>${k + " " + v.toString()}</h3>`, "");
+            draw_formula([...Object.values(data["task1"])])
+            get_data_for_graph([...Object.values(data["task1"])]);
+
+            document.getElementById("task_2_a").innerText = data["task2"]["lagrangian"];
+            document.getElementById("task_2_R").innerText = data["task2"]["R_func"] + " <= " + data["task2"]["eps"];
+            document.getElementById("task_3_D").innerText = data["task3"]["d_eps"];
+            draw_table(data["task3"]["new_table"]);
+
         }
     }
 });

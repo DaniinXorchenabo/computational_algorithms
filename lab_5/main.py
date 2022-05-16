@@ -130,7 +130,7 @@ async def test(
                 res_ = [normalized_result(j) for j in awaited_data_.args]
         # if hasattr(awaited_data_, 'tolist'):
         #     res_ = [list(map(lambda i: str(round(i, 30)), i)) for i in awaited_data_]
-        if isinstance(res_, float) and -2 <= res_ <= 2:
+        if isinstance(res_, float) and -2 <= res_ <= 2 and abs(res_) > 10e-7:
             res_ = float(round(Decimal(round(res_ * 100, 10)) / 100, 12))
         return res_
 

@@ -2,42 +2,62 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Лабораторная работа по вычислительным алгоритмам № 4</title>
+    <title>Лабораторная работа по вычислительным алгоритмам № 5</title>
+    <script defer src="https://cdn.plot.ly/plotly-2.6.3.min.js"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer src="scripts/draw_formula.js"></script>
+    <script defer src="scripts/graph.js"></script>
+    <script defer src="scripts/data_processing.js"></script>
     <script defer src="scripts/to_server.js"></script>
+
     <link rel="stylesheet" href="styles/base_styles.css">
     <link rel="stylesheet" href="styles/layout_stiles.css">
+    <link rel="stylesheet" href="styles/table_stiles.css">
+
+
 </head>
 <body>
 
-<h1>Лабораторная работа по вычислительным алгоритмам № 4</h1>
+<h1>Лабораторная работа по вычислительным алгоритмам № 5</h1>
 
 
 <div class="parent_box">
 
     <div class="child input_box_parent" id="matrix_content">
         <div class="array_box">
-            <h2>Проверка интервалов</h2>
-            <div id="show_ranges">
-
-            </div>
+            <h2>Полученная формула интерполяционного многочлена Лагранжа</h2>
+            <p id="Lagrangian_formula">$${0}$$</p>
+            <div id="my_graph"></div>
 
 
         </div>
         <div class="array_box">
-            <h2>Корни, полученные методом половинного деления: <text id="rootCorrectionAs2Division"></text></h2>
-            <div id="show_division2method">
-
+            <h2>Задание 2 </h2>
+            <div class='input_box'>
+                <text>Вычисленное значение для промежуточного аргумента:</text>
+                <text id="task_2_a"></text>
+            </div>
+            <div class='input_box'>
+                <text>При этом равенство</text>
+                <text id="task_2_R"></text>
+                <text> выполняется</text>
             </div>
         </div>
         <div class="array_box">
-            <h2>Корни, полученные методом Ньютона: <text id="NewtonsMethod"></text></h2>
-            <div id="show_Newthon_method">
-
+            <h2>Задание 2 </h2>
+            <div class='input_box'>
+                <text>Погрешность интерполяции D: </text>
+                <text id="task_3_D"></text>
             </div>
         </div>
     </div>
 
 </div>
 
+<div class="table_box">
+    <table id="result_table">
+
+    </table>
+</div>
 </body>
 </html>
