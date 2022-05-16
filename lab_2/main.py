@@ -82,4 +82,4 @@ async def test(p1: list[float] = Query([0]), p2: list[float] = Query([0]),
 app.mount("/public", StaticFiles(directory=join(split(__file__)[0], 'public')), name="static")
 
 if __name__ == '__main__':
-    uvicorn.run("main:app", host="localhost", port=9010, reload=True, reload_includes=['*.py', '*.nb'])
+    uvicorn.run("main:app", host="localhost", port=9012, reload=True, reload_includes=['*.py', '*.nb'])

@@ -107,4 +107,4 @@ async def root_f():
 app.mount("/public", StaticFiles(directory=join(split(__file__)[0], 'public')), name="static")
 
 if __name__ == '__main__':
-    uvicorn.run("main:app", host="localhost", port=9010, reload=True, reload_includes=['*.py', '*.nb'])
+    uvicorn.run("main:app", host="localhost", port=9014, reload=True, reload_includes=['*.py', '*.nb'])
