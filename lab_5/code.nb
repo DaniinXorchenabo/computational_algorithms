@@ -149,12 +149,138 @@ getFunction[xOld_, yOld_, eps_] := (
         i = 0,
         i < Length[answer],
         i++;
-        aArray = Append[aArray, answer[[i, -1]]];
+        aArray = Append[aArray, "x" <> ToString[i - 1] -> answer[[i, -1]]];
     ];
     aArray
 
 );
 
-resultMatrix = getFunction[xData, yData, eps];
+getLagrangian[xNodes_, x_, yNodes_] := (
+    result = 0;
+    For[
+        i1 = 0,
+        i1 < Length[xNodes],
+        i1++;
+        numerator = 1;
+        divider = 1;
+        For[
+            j1 = 0,
+            j1 < Length[xNodes],
+            j1++;
+            numerator = numerator * If[i1 != j1, x - xNodes[[j1]], 1];
+            divider = divider *  If[i1 != j1, xNodes[[i1]] - xNodes[[j1]], 1];
+        ];
+        result += yNodes[[i1]] * numerator / divider;
+    ];
 
-resultMatrix
+    result
+
+);
+
+myFunc[x_] = 2.1 * Sin[0.37 * x];
+
+getMiddleValueOfArgument[xNodes_, yNodes_, myFunc_, x_] := (
+    nPlus1DFunc =  myFunc;
+    count = 0;
+
+    factorial = 1;
+
+    For[
+        i = 0,
+        i <= Length[xNodes] ,
+        i++;
+        nPlus1DFunc[Xxx_] = D[nPlus1DFunc[Xxx], Xxx];
+        count ++;
+        factorial = factorial * i;
+    ];
+
+    nPlus1DFuncYs = {};
+    deltaXs = 1;
+    For[
+        i = 0,
+        i < Length[xNodes],
+        i++;
+        nPlus1DFuncYs = Append[nPlus1DFuncYs, nPlus1DFunc[xNodes[[i]]]];
+        deltaXs = deltaXs * (x - xNodes[[i]]);
+    ];
+    deltaXs = Abs[deltaXs];
+    sss = {1,2, 3, 4, 5, 6};
+    MNPlus1 = Max[nPlus1DFuncYs];
+    ;
+    lagrangianValue = getLagrangian[xNodes, x, yNodes];
+
+    rFuncValue = Abs[myFunc[x] - lagrangianValue];
+    eps = MNPlus1 * deltaXs / factorial;
+
+
+    {"R_func" -> rFuncValue, "eps" -> eps, "lagrangian" -> lagrangianValue, "func" -> myFunc[x]}
+
+
+);
+
+getDeltaMatrix[yArray_] := (
+    localDelta = {};
+
+    localDelta = Append[localDelta, yArray];
+
+    For[
+        i1 = 1,
+        i1 < Length[yArray],
+        i1++;
+        localDelta = Append[localDelta, {}];
+        For[
+            j = 0,
+            j < Length[localDelta[[i1-1]]] - 1,
+            j++;
+            localDelta[[i1]] = Append[ localDelta[[i1]], localDelta[[i1-1, j + 1]] - localDelta[[i1-1, j]] ];
+        ];
+
+    ];
+    localDelta
+);
+
+
+NewtonsInterpolationPolynomial[xx_, locDelta_, h3_, x0_] := (
+
+    ttt = (xx - x0) / h3;
+    P2 = (locDelta[[1, 1]] ) + (ttt * locDelta[[2, 1]]) + (ttt * (ttt - 1) * locDelta[[3, 1]] / 2!) + (ttt * (ttt - 1) * (ttt - 2) * locDelta[[4, 1]] / 3!);
+    P2
+
+);
+
+myFunc3[xxx_] := Sin[xxx];
+
+SealTable[a3_, b3_,  h03_, h3_, xNodes3_, yNodes3_, someFunc_] := (
+    delta = getDeltaMatrix[yNodes3];
+    newTable = {};
+
+    DDDSomeFunc[Xxxx_] = D[D[D[ Sin[Xxxx] , Xxxx], Xxxx], Xxxx];
+    DDSomeFunc[Xxxx_] = D[D[ Sin[Xxxx], Xxxx ], Xxxx];
+    DSomeFunc[Xxxx_] = D[Sin[Xxxx], Xxxx];
+
+    For[
+        i = N[a3 * 100 - h3 * 100, 10] / 100,
+        i < b3,
+        i = N[i * 100 + h3 * 100, 10] / 100;
+        If[
+            N[Mod[N[i*100 - a3*100, 3], h03*100], 10] == 0,
+            newTable = Append[newTable, N[i * 100, 10] / 100 -> yNodes3[[  IntegerPart[(i * 100 - a3 * 100) / (h03 * 100)] + 1 ]]],
+            newTable = Append[newTable, N[i * 100, 10] / 100 -> NewtonsInterpolationPolynomial[i, delta, h03, a3]]
+        ];
+    ];
+    xx = xNodes3[[2]];
+    x0 = a3;
+    ttt = (xx - x0) / h03;
+    dEps = (ttt * (ttt - 1) * (ttt - 2)) * DDDSomeFunc[  xx  ]  / (3!) ;
+
+    { "d_eps" -> dEps, "new_table" -> newTable}
+);
+
+
+
+resultMatrixTask1 = getFunction[xData, yData, eps];
+resultMatrixTask2 =  getMiddleValueOfArgument[xNodes, yNodes, myFunc, a2];
+resultMatrixTask3 = SealTable[a3, b3, h03, h3, xNodes3, yNodes3, myFunc3];
+
+{ "task1" -> resultMatrixTask1, "task2" -> resultMatrixTask2, "task3" -> resultMatrixTask3}
+
