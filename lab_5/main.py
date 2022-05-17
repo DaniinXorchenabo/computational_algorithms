@@ -81,8 +81,8 @@ async def test(
              f'a = {a};' \
              f'b = {b};' \
              f'eps = {eps};' \
-             'xData = {3, 5, 7};' \
-             'yData = {-3, -7, 1};' \
+             'xData = {-3, -1, 3};' \
+             'yData = {7, -1, 4};' \
              f'a2 = {a2};' \
              f'xNodes = {"{" + ", ".join([str(i) for i in x_nodes]) + "}"};' \
              f'yNodes = {"{" + ", ".join([str(i) for i in y_nodes]) + "}"};' \

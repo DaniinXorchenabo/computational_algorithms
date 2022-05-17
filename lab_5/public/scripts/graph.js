@@ -10,7 +10,7 @@ const updating_graph_data = ([key, value, default_obj]) => {
 }
 
 
-const draw_graph = (data_for_graph, sort_data, data_from_server, graph_text = "") => {
+const draw_graph = (data_for_graph, graph_id, sort_data, data_from_server, graph_text = "") => {
 
     const get_data_for_showing_graph = (formatted_data, flag) => {
         return updating_graph_data([graph_text, formatted_data, data_for_graph])
@@ -30,7 +30,8 @@ const draw_graph = (data_for_graph, sort_data, data_from_server, graph_text = ""
 
         const layout = layout_generator(graph_name);
 
-        let local_data = [updating_graph_data([graph_name, formatted_data, default_obj])];
+        let local_data = [...formatted_data]
+            .map((i, index) => updating_graph_data([graph_name, i, default_obj[index]]))
         console.log(local_data);
         layout.title = graph_name;
         layout.xaxis.autorange = true;
@@ -39,14 +40,16 @@ const draw_graph = (data_for_graph, sort_data, data_from_server, graph_text = ""
         Plotly.react(graph_id, local_data, layout);
     }
 
-    let graph_data =
-        {mode: 'lines', line: {color: "#fc7e0d"}};
+    let graph_data =[
+        {mode: 'lines', line: {color: "#fc7e0d"}},
+        {mode: 'lines', line: {color: "#ac0dfc"}}
+    ];
 
     // const raw_data = data_for_graph;
     // let formatted_data = raw_data.concat(graph_data);
     // console.log(formatted_data);
     // console.log("***", raw_data)
-    graph_drawer("my_graph", "", data_for_graph, graph_data);
+    graph_drawer(graph_id, "", data_for_graph, graph_data);
 
 
 

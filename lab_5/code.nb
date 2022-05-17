@@ -151,6 +151,7 @@ getFunction[xOld_, yOld_, eps_] := (
         i++;
         aArray = Append[aArray, "x" <> ToString[i - 1] -> answer[[i, -1]]];
     ];
+
     aArray
 
 );
@@ -179,7 +180,7 @@ getLagrangian[xNodesLocal_, xX_, yNodesLocal_] := (
 
 myGlobalFunc[Xxxxx_] = 2.1 * Sin[0.37 * Xxxxx];
 
-getMiddleValueOfArgument[xLocNodes_, yLocNodes_, myFunc_, x_] := (
+getMiddleValueOfArgument[xLocNodes_, yLocNodes_, myFunc_, XX_] := (
     nPlus1DFunc[Xxx_] =  myFunc[Xxx];
     count = 0;
 
@@ -201,18 +202,34 @@ getMiddleValueOfArgument[xLocNodes_, yLocNodes_, myFunc_, x_] := (
         i < Length[xLocNodes],
         i++;
         nPlus1DFuncYs = Append[nPlus1DFuncYs, nPlus1DFunc[xLocNodes[[i]]]];
-        deltaXs = deltaXs * (x - xLocNodes[[i]]);
+        deltaXs = deltaXs * (XX - xLocNodes[[i]]);
     ];
     deltaXs = Abs[deltaXs];
     MNPlus1 = Max[nPlus1DFuncYs];
     ;
-    lagrangianValue = getLagrangian[xLocNodes, x, yLocNodes];
+    lagrangianValue = getLagrangian[xLocNodes, XX, yLocNodes];
 
-    rFuncValue = Abs[myFunc[x] - lagrangianValue];
+    rFuncValue = Abs[myFunc[XX] - lagrangianValue];
     eps = MNPlus1 * deltaXs / (( Length[xLocNodes] +1 )! / 1);
 
+    lagrangianGraph = {};
+    For[
+        i = -10.1,
+        i <= 10,
+        i += 0.1;
+        lagrangianGraph = Append[lagrangianGraph, i -> getLagrangian[xLocNodes, i, yLocNodes]];
+    ];
 
-    {"R_func" -> rFuncValue, "eps" -> eps, "lagrangian" -> lagrangianValue, "func" -> myFunc[x]}
+    funcGraph = {};
+    For[
+        i = -10.1,
+        i <= 10,
+        i += 0.1;
+        funcGraph = Append[funcGraph, i -> myFunc[i]];
+    ];
+
+
+    {"R_func" -> rFuncValue, "eps" -> eps, "lagrangian" -> lagrangianValue, "func" -> myFunc[XX], "lagrangian_graph" -> lagrangianGraph, "func_graph" -> funcGraph}
 
 
 );
@@ -275,16 +292,25 @@ SealTable[a3_, b3_,  h03_, h3_, xNodes3_, yNodes3_, someFunc_] := (
             If[
                 (b3 + a3) / 2 < i,
                 newTable = Append[newTable, N[i * 100, 10] / 100 -> NewtonsInterpolationPolynomialForward[i, delta, h03, a3]],
-                newTable = Append[newTable, N[i * 100, 10] / 100 -> NewtonsInterpolationPolynomialBackward[i, delta, h03, a3]]
+                newTable = Append[newTable, N[i * 100, 10] / 100 -> NewtonsInterpolationPolynomialForward[i, delta, h03, a3]]
             ]
         ];
     ];
-    xx = xNodes3[[3]];
+    xx = (xNodes3[[3]] + xNodes3[[2]]) / 2;
     x0 = a3;
     ttt = (xx - x0) / h03;
     dEps = (ttt * (ttt - 1) * (ttt - 2)) * DDDSomeFunc[  xx  ]  / (3!) ;
 
-    { "d_eps" -> dEps, "new_table" -> newTable}
+
+    funcGraph = {};
+    For[
+        i = a3-(h3*20),
+        i <= b3 + (h3 * 20),
+        i += h3;
+        funcGraph = Append[funcGraph, i -> someFunc[i]];
+    ];
+
+    { "d_eps" -> dEps, "new_table" -> newTable, "func_graph" -> funcGraph}
 );
 
 
