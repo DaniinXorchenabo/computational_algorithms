@@ -5,9 +5,11 @@
     <title>Лабораторная работа по вычислительным алгоритмам № 6</title>
     <script defer src="scripts/to_server.js"></script>
     <script defer src="scripts/draw_table.js"></script>
+    <script defer src="scripts/input_data.js"></script>
     <link rel="stylesheet" href="styles/base_styles.css">
     <link rel="stylesheet" href="styles/layout_stiles.css">
     <link rel="stylesheet" href="styles/table_stiles.css">
+
 
 </head>
 <body>
@@ -19,9 +21,26 @@
 
     <div class="child input_box_parent" id="matrix_content">
         <div class="array_box">
+            <h2>Введите точность</h2>
+            <div class="input_box">
+                <test>eps</test>
+                <input id="input_eps" value="0.01"
+                       oninput="correcting_number(event)"
+                       onchange="corrected_number(event)"
+                       placeholder="Положительное число с плавающей точкой">
+            </div>
+            <div class="input_box">
+                <button id="send_button">Посчитать</button>
+            </div>
+
+        </div>
+
+
+        <div class="array_box">
             <h2>Метод прямоугольников</h2>
             <div class="table_box">
-                <text>Полученная сумма:</text><text id="task1_result"></text>
+                <text>Полученная сумма:</text>
+                <text id="task1_result"></text>
             </div>
             <table id="task1_table">
 
@@ -32,7 +51,8 @@
         <div class="array_box">
             <h2>Метод трапеций</h2>
             <div class="table_box">
-                <text>Полученная сумма:</text><text id="task2_result"></text>
+                <text>Полученная сумма:</text>
+                <text id="task2_result"></text>
             </div>
             <table id="task2_table">
 
@@ -42,7 +62,8 @@
         <div class="array_box">
             <h2>Метод Симсона</h2>
             <div class="table_box">
-                <text>Полученная сумма:</text><text id="task3_result"></text>
+                <text>Полученная сумма:</text>
+                <text id="task3_result"></text>
             </div>
             <table id="task3_table">
 
