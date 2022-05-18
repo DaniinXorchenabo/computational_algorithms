@@ -7,6 +7,7 @@ rectangleMethod[oldFrom_, oldTo_, funcFromParam_, eps_] := (
     locFunc[XXX_] = funcFromParam[XXX];
     lastSumm = 100;
     summ = 0;
+    sums = {};
     For[
         locSetup1 = 1,
         Abs[lastSumm - summ] >= eps,
@@ -21,9 +22,10 @@ rectangleMethod[oldFrom_, oldTo_, funcFromParam_, eps_] := (
             summ += locFunc[i];
         ];
         summ = summ * locSetup1;
+        sums = Append[sums, N[locSetup1, 20] -> N[summ, 20]];
     ];
 
-    {N[summ, 20], N[locSetup1], locFrom, locTo}
+    {"sum" -> N[summ, 20], "a" -> locFrom, "b" -> locTo, "history" -> sums}
 
 );
 
@@ -33,6 +35,7 @@ trapezoidMethod[oldFrom_, oldTo_, funcFromParam_, eps_] := (
     locFunc[XXX_] = funcFromParam[XXX];
     lastSumm = 100;
     summ = 0;
+    sums = {};
     For[
         locSetup2 = 1,
         Abs[lastSumm - summ] > eps,
@@ -46,38 +49,9 @@ trapezoidMethod[oldFrom_, oldTo_, funcFromParam_, eps_] := (
             summ += locFunc[i];
         ];
         summ = (summ + (locFunc[locFrom] + locFunc[locTo]) / 2) * locSetup2 ;
+        sums = Append[sums, N[locSetup2, 20] -> N[summ, 20]];
     ];
-    {N[summ, 20], N[locSetup2], locFrom, locTo}
-);
-
-SimsonMethod[oldFrom_, oldTo_, funcFromParam_, eps_] := (
-    locFrom = oldFrom;
-    locTo = oldTo;
-    locFunc[XXX_] = funcFromParam[XXX];
-    lastSumm = 100;
-    summm = 0;
-    count = 0;
-    sumHistory = {};
-    m = 0;
-    For[
-        m = 0,
-        count < 10,
-        m = m + 1;
-        lastSumm = summm;
-        summm = 0;
-        For[
-            i = 0,
-            i < m,
-            i += 1;
-            summm = summm + locFunc[2 * i - 2] + 4 * locFunc[2 * i - 1] + locFunc[2 * i];
-        ];
-        h = (locTo - locFrom) / (2 * m);
-        summm =  (h * summm / 3) ;
-        sumHistory = Append[sumHistory, N[summm, 20]];
-        count+=1;
-
-    ];
-    {N[summm, 10],  locFrom, locTo, sumHistory}
+    {"sum" -> N[summ, 20], "a" -> locFrom, "b" -> locTo, "history" -> sums}
 );
 
 
@@ -88,6 +62,7 @@ Simson2Method[oldFrom_, oldTo_, funcFromParam_, eps_] := (
     lastSumm = 100;
     summm = 0;
     n = 2;
+    sums = {};
     For[
         n = 2,
         Abs[lastSumm - summm ] >= eps / 2,
@@ -99,15 +74,16 @@ Simson2Method[oldFrom_, oldTo_, funcFromParam_, eps_] := (
             i = 0,
             i < IntegerPart[n / 2],
             i += 1;
-            summm +=  2 * locFunc[locFrom + (2 * i) * dx] + 4 * locFunc[locFrom +(2 * i + 1) * dx ];
+            summm +=  2 * locFunc[locFrom + (2 * i) * dx] + 4 * locFunc[locFrom + (2 * i + 1) * dx ];
         ];
         summm =  summm * dx / 3 ;
-
+        sums = Append[ sums, N[dx, 20] -> N[summm, 20] ];
     ];
-    {N[summm, 20],  locFrom, locTo}
+    {"sum" -> N[summm, 20], "a" -> locFrom, "b" -> locTo, "history" -> sums}
 );
 
 res1 = rectangleMethod[a, b, GlobalFunc, eps];
 res2 = trapezoidMethod[a, b, GlobalFunc, eps];
 res3 = Simson2Method[a, b, GlobalFunc, eps];
+
 {"rectangle" -> res1, "trapezoid" -> res2, "simson" -> res3}

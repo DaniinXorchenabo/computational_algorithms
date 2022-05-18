@@ -57,7 +57,7 @@ async def create_connection_with_wolfram():
 
 
 @app.get('/calculate', response_model=list[list[Decimal]] | Any)
-async def test(n: int = 10, a: Decimal = 0, b: Decimal = 0.5, eps='10^-2'):
+async def test(n: int = 10, a: Decimal = 0, b: Decimal = 0.5, eps='10^-3'):
     """ ln(x) - (1 /(x + 1))  = 0 => x > 0 """
     global wolfram_code
     with open('code.nb', 'r', encoding='utf-8') as f:
@@ -66,6 +66,7 @@ async def test(n: int = 10, a: Decimal = 0, b: Decimal = 0.5, eps='10^-2'):
     # How to update part in matrix see: https://reference.wolfram.com/language/howto/UpdatePartsOfAMatrix.html
     a = 1
     b = 2
+    print(eps)
     params = f'a = {a};' \
              f'b = {b};' \
              f'eps = {eps};'
@@ -110,8 +111,9 @@ async def test(n: int = 10, a: Decimal = 0, b: Decimal = 0.5, eps='10^-2'):
             res_ = float(round(Decimal(round(res_ * 100, 10)) / 100, 12))
         return res_
 
-    res: list | dict = normalized_result(awaited_data)
     print(awaited_data, sep='\n')
+    res: list | dict = normalized_result(awaited_data)
+
     print(res)
 
     return res
