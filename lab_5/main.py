@@ -39,7 +39,11 @@ async def create_connection_with_wolfram():
                              'See a example.env file for more information.')
     session = WolframCloudAsyncSession(credentials=key)
     await session.start()
-    session.authorized()
+    print(session.authorized())
+
+    print('wolfram authorized')
+    # res = await session.evaluate('ImageIdentify[ First[ WebImageSearch["bird","Images",1] ] ]')
+    # print(res)
 
 
 @app.on_event('startup')
@@ -95,14 +99,20 @@ async def test(
  \
     # print(params)
     try:
-        data = session.evaluate(params + wolfram_code)
+        data = session.evaluate(params + wolfram_code )
         # print(data)
         awaited_data: PackedArray = await data
+        # res = await session.evaluate('ImageIdentify[ First[ WebImageSearch["bird","Images",1] ] ]')
+        # print(res)
     except RequestException as e:
         if e.response.response.status == 401:
             await create_connection_with_wolfram()
             data = session.evaluate(params + wolfram_code)
             awaited_data: PackedArray = await data
+        elif e.response.response.status == 531:
+            print(os.environ['CONSUMER_KEY'],  os.environ['CONSUMER_SECRET'])
+            raise ConnectionError("Похоже, что срок действия ключей подключения к серверам wolfram истёк, "
+                                  "или ключи вовсе не действительны") from e
         else:
             raise e from e
 

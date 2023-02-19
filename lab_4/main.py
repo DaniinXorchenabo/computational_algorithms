@@ -78,6 +78,10 @@ async def test(n: int = 10, a: Decimal = 0, b: Decimal = 100, eps='10^-8'):
             await create_connection_with_wolfram()
             data = session.evaluate(params + wolfram_code)
             awaited_data: PackedArray = await data
+        elif e.response.response.status == 531:
+            print(os.environ['CONSUMER_KEY'], os.environ['CONSUMER_SECRET'])
+            raise ConnectionError("Похоже, что срок действия ключей подключения к серверам wolfram истёк, "
+                                  "или ключи вовсе не действительны") from e
         else:
             raise e from e
 

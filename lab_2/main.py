@@ -7,6 +7,7 @@ from decimal import Decimal
 from dotenv import load_dotenv
 from wolframclient.evaluation import WolframCloudAsyncSession, SecuredAuthenticationKey
 from fastapi import FastAPI
+from wolframclient.exception import RequestException
 from wolframclient.serializers import export
 from fastapi import FastAPI, Path, Query
 from fastapi.responses import FileResponse
@@ -71,11 +72,24 @@ async def test(p1: list[float] = Query([0]), p2: list[float] = Query([0]),
              f"x2 = {p2_x};" \
              f"eps = {eps};" + '\n'
     print(params)
-    data = session.evaluate(params + wolfram_code)
-    print(data)
-    awaited_data = await data
-    print(awaited_data)
-
+    try:
+        data = session.evaluate(params + wolfram_code)
+        print(data)
+        awaited_data = await data
+        print(awaited_data)
+    except RequestException as e:
+        if e.response.response.status == 401:
+            await create_connection_with_wolfram()
+            data = session.evaluate(params + wolfram_code)
+            print(data)
+            awaited_data = await data
+            print(awaited_data)
+        elif e.response.response.status == 531:
+            print(os.environ['CONSUMER_KEY'], os.environ['CONSUMER_SECRET'])
+            raise ConnectionError("Похоже, что срок действия ключей подключения к серверам wolfram истёк, "
+                          "или ключи вовсе не действительны") from e
+        else:
+            raise e from e
     return awaited_data
 
 
